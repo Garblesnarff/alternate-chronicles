@@ -9,6 +9,94 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      events: {
+        Row: {
+          category: Database["public"]["Enums"]["timeline_category"]
+          confidence_score: number
+          created_at: string | null
+          date: string
+          description: string | null
+          id: string
+          impact_analysis: string | null
+          timeline_id: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["timeline_category"]
+          confidence_score: number
+          created_at?: string | null
+          date: string
+          description?: string | null
+          id?: string
+          impact_analysis?: string | null
+          timeline_id: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["timeline_category"]
+          confidence_score?: number
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          impact_analysis?: string | null
+          timeline_id?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_timeline_id_fkey"
+            columns: ["timeline_id"]
+            isOneToOne: false
+            referencedRelation: "timelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historical_media: {
+        Row: {
+          content: string
+          event_id: string
+          generated_at: string | null
+          id: string
+          type: Database["public"]["Enums"]["media_type"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          event_id: string
+          generated_at?: string | null
+          id?: string
+          type: Database["public"]["Enums"]["media_type"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          event_id?: string
+          generated_at?: string | null
+          id?: string
+          type?: Database["public"]["Enums"]["media_type"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historical_media_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Oversight: {
         Row: {
           created_at: string
@@ -24,6 +112,44 @@ export type Database = {
         }
         Relationships: []
       }
+      timelines: {
+        Row: {
+          base_timeline_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          base_timeline_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          base_timeline_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timelines_base_timeline_id_fkey"
+            columns: ["base_timeline_id"]
+            isOneToOne: false
+            referencedRelation: "timelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -35,7 +161,14 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      media_type: "Newspaper" | "Document" | "Photo" | "Video" | "Audio"
+      timeline_category:
+        | "Technology"
+        | "Political"
+        | "Cultural"
+        | "Economic"
+        | "Military"
+        | "Scientific"
     }
     CompositeTypes: {
       [_ in never]: never
