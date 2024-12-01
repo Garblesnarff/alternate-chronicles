@@ -22,10 +22,11 @@ export const Timeline = () => {
     try {
       const { error } = await supabase
         .from('timelines')
-        .insert([{
+        .insert({
           name: newTimeline.name,
           description: newTimeline.description,
-        }]);
+          user_id: '00000000-0000-0000-0000-000000000000', // Temporary development user ID
+        });
 
       if (error) throw error;
 
