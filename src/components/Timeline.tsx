@@ -9,7 +9,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/providers/AuthProvider";
+import { Event } from "@/types/supabase";
 
 export const Timeline = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -17,14 +17,8 @@ export const Timeline = () => {
   const { data: timelines, isLoading: timelinesLoading } = useTimelines();
   const { data: events, isLoading: eventsLoading } = useTimelineEvents(timelines?.[0]?.id);
   const { toast } = useToast();
-  const { user, showAuthModal } = useAuth();
 
   const handleCreateTimeline = async () => {
-    if (!user) {
-      showAuthModal();
-      return;
-    }
-
     setIsCreating(true);
     try {
       const { error } = await supabase
@@ -32,7 +26,6 @@ export const Timeline = () => {
         .insert([{
           name: newTimeline.name,
           description: newTimeline.description,
-          user_id: user.id
         }]);
 
       if (error) throw error;
@@ -52,20 +45,6 @@ export const Timeline = () => {
       setIsCreating(false);
     }
   };
-
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
-        <h2 className="text-2xl font-bold text-white">Welcome to Reality Remixer</h2>
-        <p className="text-gray-400 text-center max-w-md">
-          Sign in to create and explore alternate timelines, tracking historical events and their impact on reality.
-        </p>
-        <Button onClick={showAuthModal} variant="secondary">
-          Sign In to Get Started
-        </Button>
-      </div>
-    );
-  }
 
   if (timelinesLoading || eventsLoading) {
     return (
