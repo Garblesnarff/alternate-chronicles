@@ -9,7 +9,6 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { Event } from "@/types/supabase";
 
 export const Timeline = () => {
   const [isCreating, setIsCreating] = useState(false);
