@@ -21,13 +21,19 @@ export const Sidebar = () => {
     
     setIsCreating(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
       const { error } = await supabase
         .from('timelines')
-        .insert([{
+        .insert({
           name: newTimeline.name,
           description: newTimeline.description,
-          user_id: '00000000-0000-0000-0000-000000000000', // Temporary for development
-        }]);
+          user_id: user.id,
+        });
 
       if (error) throw error;
 
@@ -37,10 +43,11 @@ export const Sidebar = () => {
       });
       setNewTimeline({ name: '', description: '' });
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error creating timeline:', error);
       toast({
         title: "Error",
-        description: "Failed to create timeline",
+        description: error.message || "Failed to create timeline",
         variant: "destructive",
       });
     } finally {
